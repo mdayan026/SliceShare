@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sliceshare</title>
+    <meta name="author" content="THE SANDF">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="bill192.png" type="image/png">
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js")
+                .then(() => console.log("Service Worker Registered"))
+                .catch((error) => console.error("Service Worker Registration Failed:", error));
+        }
+    </script>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1 class="text-center">sliceshare</h1>
+        
+        <!-- Add the Dark Mode Toggle Button with Sun/Moon Icon -->
+        <button id="darkModeToggle" class="custom-btn" title="Toggle Dark Mode">🌞</button>
+        
+        <!-- Add the Install Button -->
+        <button id="installButton" class="custom-btn">Install App</button>
+        
+        <!-- Participants Input -->
+        <div class="form-group">
+            <label for="names">Names:</label>
+            <div class="chip-container" id="chipContainer">
+                <input type="text" class="chip-input" id="chipInput" placeholder="Add names, comma separated" title="Enter participant names separated by commas.">
+            </div>
+        </div>
+        <hr>
+        
+        <!-- Expense Form -->
+        <h3>Add Expense</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" placeholder="e.g., Dinner" title="Enter a short description for the expense.">
+            </div>
+            <div class="form-group">
+                <label for="payer">Payer:</label>
+                <select id="payer" title="Select the person who paid for this expense.">
+                    <option value="">Select Payer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" id="amount" placeholder="e.g., 60" title="Enter the total expense amount in ₹." oninput="updateRemainingAmount(); updateRemainingPercentage();">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="splitType">Split Type:</label>
+                <select id="splitType" onchange="showSplitDetails()">
+                    <option value="equal">Equally</option>
+                    <option value="unequal">Unequally</option>
+                    <option value="shares">By Shares</option>
+                    <option value="percentages">By Percentages</option>
+                </select>
+            </div>
+        </div>
+        <div id="splitDetails" style="display: none;"></div>
+        <button class="custom-btn" onclick="addExpense()" title="Add this expense.">Add Expense</button>
+
+        <div id="totalExpense">₹0.00</div>
+
+        <hr>
+        <!-- Record Payment Section -->
+        <h3>Record Payment</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="paymentPayer">Payer:</label>
+                <select id="paymentPayer"><option value="">Select Payer</option></select>
+            </div>
+            <div class="form-group">
+                <label for="paymentPayee">Receiver:</label>
+                <select id="paymentPayee"><option value="">Select Payee</option></select>
+            </div>
+            <div class="form-group">
+                <label for="paymentAmount">Amount:</label>
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" id="paymentAmount" placeholder="Amount">
+                </div>
+            </div>
+            <button class="custom-btn" onclick="recordPayment()">Record </button>
+        </div>
+
+        <div id="paymentsList"></div>
+
+        <hr>
+        <h3>Expense Details</h3>
+        <table id="expensesTable">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Description</th>
+                    <th>Payer</th>
+                    <th>Amount</th>
+                    <th>Split Details</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Balances</h3>
+        <table id="balancesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Balance (₹)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <h3>Settlement Details</h3>
+        <div id="settlementDetails"></div>
+        <button class="custom-btn" onclick="exportToCSV()">Export CSV</button>
+        <button class="custom-btn" onclick="copySettlementDetailsAsText()">Copy</button>
+    </div>
+
+    <script src="ui.js"></script>
+    <script src="logic.js"></script>
+    <script src="darkMode.js"></script>
+    <script src="export.js"></script>
+</body>
+</html>
